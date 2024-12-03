@@ -1,12 +1,14 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: grafana
 resources:
-  - clusterrole-grafana-clusterrole.yaml
-  - rolebinding-grafana.yaml
+  - namespace.yaml
   - clusterrolebinding-grafana-clusterrolebinding.yaml
-  - secret-grafana.yaml
+  - clusterrole-grafana-clusterrole.yaml
   - configmap-grafana.yaml
-  - service-grafana.yaml
   - deployment-grafana.yaml
-  - serviceaccount-grafana.yaml
   - role-grafana.yaml
+  - rolebinding-grafana.yaml
+  - secret-grafana.yaml
+  - serviceaccount-grafana.yaml
+  - service-grafana.yaml
