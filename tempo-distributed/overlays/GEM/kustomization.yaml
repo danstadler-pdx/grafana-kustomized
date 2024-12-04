@@ -36,7 +36,3 @@ resources:
   - tempo-distributed/templates/ingester/statefulset-ingester.yaml
   - tempo-distributed/templates/memcached/statefulset-memcached.yaml
   - tempo-distributed/templates/enterprise-gateway/gateway-ingress.yaml
-secretGenerator:
-- name: gem-license
-  files:
-  - /Users/danstadler/Documents/code/grafana-licenses/GETlicense.txt
