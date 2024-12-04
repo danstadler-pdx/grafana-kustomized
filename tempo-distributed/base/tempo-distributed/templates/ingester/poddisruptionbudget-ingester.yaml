@@ -1,0 +1,21 @@
+---
+# Source: tempo-distributed/templates/ingester/poddisruptionbudget-ingester.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: tempo-ingester
+  labels:
+    helm.sh/chart: tempo-distributed-1.23.2
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: tempo
+    app.kubernetes.io/component: ingester
+    app.kubernetes.io/part-of: memberlist
+    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tempo
+      app.kubernetes.io/instance: tempo
+      app.kubernetes.io/component: ingester
+  maxUnavailable: 1

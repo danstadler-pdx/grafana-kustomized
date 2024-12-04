@@ -1,0 +1,34 @@
+---
+# Source: tempo-distributed/templates/query-frontend/service-query-frontend-discovery.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: tempo-query-frontend-discovery
+  namespace: tempo
+  labels:
+    helm.sh/chart: tempo-distributed-1.23.2
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: tempo
+    app.kubernetes.io/component: query-frontend
+    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: http
+      port: 3100
+      targetPort: 3100
+    - name: grpc
+      port: 9095
+      protocol: TCP
+      targetPort: 9095
+    - name: grpclb
+      port: 9096
+      protocol: TCP
+      targetPort: grpc
+  publishNotReadyAddresses: true
+  selector:
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: tempo
+    app.kubernetes.io/component: query-frontend
