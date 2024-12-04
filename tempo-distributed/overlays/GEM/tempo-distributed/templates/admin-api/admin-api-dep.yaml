@@ -14,7 +14,7 @@ metadata:
     app.kubernetes.io/version: "2.6.0"
     app.kubernetes.io/managed-by: Helm
   name: gem-tempo-admin-api
-  namespace: "grafana-enterprise-metrics"
+  namespace: "grafana-enterprise-traces"
 spec:
   replicas: 1
   selector:
@@ -38,8 +38,8 @@ spec:
         app.kubernetes.io/component: admin-api
         app.kubernetes.io/part-of: memberlist
       annotations:
-        checksum/config: bb1f01c354f34275b241088bc53a190b0e416de75e5437a16dc67fb022546693
-      namespace: "grafana-enterprise-metrics"
+        checksum/config: 4e100254f6606a9f8f2a87c4d41f6dd8d9f6ae0fdaf4565f025fbdf43708cad5
+      namespace: "grafana-enterprise-traces"
     spec:
       serviceAccountName: gem-tempo
       securityContext:

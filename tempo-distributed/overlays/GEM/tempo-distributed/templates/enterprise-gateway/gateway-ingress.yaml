@@ -15,7 +15,7 @@ metadata:
     kubernetes.io/ingress.allow-http: "false"
     kubernetes.io/ingress.global-static-ip-name: stadler-get
     networking.gke.io/managed-certificates: stadler-get-cert-object
-  namespace: "grafana-enterprise-metrics"
+  namespace: "grafana-enterprise-traces"
 spec:
   rules:
     - host: "stadler-get.se-demo.grafana.net"

@@ -4,7 +4,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: gem-minio
-  namespace: "grafana-enterprise-metrics"
+  namespace: "grafana-enterprise-traces"
   labels:
     app: minio
     chart: minio-4.0.12

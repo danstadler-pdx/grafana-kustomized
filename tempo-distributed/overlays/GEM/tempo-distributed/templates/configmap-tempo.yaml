@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/instance: gem
     app.kubernetes.io/version: "2.6.0"
     app.kubernetes.io/managed-by: Helm
-  namespace: "grafana-enterprise-metrics"
+  namespace: "grafana-enterprise-traces"
 data:
   tempo-query.yaml: |
     backend: 127.0.0.1:3100
@@ -79,23 +79,23 @@ data:
     gateway:
       proxy:
         admin_api:
-          url: http://gem-tempo-admin-api.grafana-enterprise-metrics.svc:3100
+          url: http://gem-tempo-admin-api.grafana-enterprise-traces.svc:3100
         compactor:
-          url: http://gem-tempo-compactor.grafana-enterprise-metrics.svc:3100
+          url: http://gem-tempo-compactor.grafana-enterprise-traces.svc:3100
         default:
-          url: http://gem-tempo-admin-api.grafana-enterprise-metrics.svc:3100
+          url: http://gem-tempo-admin-api.grafana-enterprise-traces.svc:3100
         distributor:
           otlp/grpc:
-            url: h2c://gem-tempo-distributor.grafana-enterprise-metrics.svc:4317
+            url: h2c://gem-tempo-distributor.grafana-enterprise-traces.svc:4317
           otlp/http:
-            url: http://gem-tempo-distributor.grafana-enterprise-metrics.svc:4318
-          url: http://gem-tempo-distributor.grafana-enterprise-metrics.svc:3100
+            url: http://gem-tempo-distributor.grafana-enterprise-traces.svc:4318
+          url: http://gem-tempo-distributor.grafana-enterprise-traces.svc:3100
         ingester:
-          url: http://gem-tempo-ingester.grafana-enterprise-metrics.svc:3100
+          url: http://gem-tempo-ingester.grafana-enterprise-traces.svc:3100
         querier:
-          url: http://gem-tempo-querier.grafana-enterprise-metrics.svc:3100
+          url: http://gem-tempo-querier.grafana-enterprise-traces.svc:3100
         query_frontend:
-          url: http://gem-tempo-query-frontend.grafana-enterprise-metrics.svc:3100
+          url: http://gem-tempo-query-frontend.grafana-enterprise-traces.svc:3100
     http_api_prefix: null
     ingester:
       lifecycler:
@@ -110,7 +110,7 @@ data:
       abort_if_cluster_join_fails: false
       bind_addr: []
       bind_port: 7946
-      cluster_label: 'gem.grafana-enterprise-metrics'
+      cluster_label: 'gem.grafana-enterprise-traces'
       gossip_interval: 1s
       gossip_nodes: 2
       gossip_to_dead_nodes_time: 30s

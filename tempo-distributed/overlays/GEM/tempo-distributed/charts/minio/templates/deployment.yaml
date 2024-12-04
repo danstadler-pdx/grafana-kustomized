@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gem-minio
-  namespace: "grafana-enterprise-metrics"
+  namespace: "grafana-enterprise-traces"
   labels:
     app: minio
     chart: minio-4.0.12
@@ -28,8 +28,8 @@ spec:
         app: minio
         release: gem
       annotations:
-        checksum/secrets: e48899124c58cf8df5a784ba3561c99afc817aa73688d271c442ddb970de6f32
-        checksum/config: 24245cfec25c7a13203e28ad45f6d1c708a0a3e1c914274c458822b5beefbde9
+        checksum/secrets: de88cd536d0d0b5f156d8e88abeb71c7f33db7ce231ace81dfc0a9d8605dd811
+        checksum/config: 54a9db7c21d2c4ddf45638c7195684ada6bffec08947fdf68793e6258f178cde
     spec:
       securityContext:
         runAsUser: 1000
