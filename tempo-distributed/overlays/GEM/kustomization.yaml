@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: grafana-enterprise-traces
+resources:
+  - namespace.yaml
+  - tempo-distributed/templates/ingester/poddisruptionbudget-ingester.yaml
+  - tempo-distributed/charts/minio/templates/serviceaccount.yaml
+  - tempo-distributed/templates/serviceaccount.yaml
+  - tempo-distributed/charts/minio/templates/secrets.yaml
+  - tempo-distributed/charts/minio/templates/configmap.yaml
+  - tempo-distributed/templates/configmap-runtime.yaml
+  - tempo-distributed/templates/configmap-tempo.yaml
+  - tempo-distributed/charts/minio/templates/pvc.yaml
+  - tempo-distributed/charts/minio/templates/console-service.yaml
+  - tempo-distributed/charts/minio/templates/service.yaml
+  - tempo-distributed/templates/admin-api/admin-api-svc.yaml
+  - tempo-distributed/templates/compactor/service-compactor.yaml
+  - tempo-distributed/templates/distributor/service-distributor-discovery.yaml
+  - tempo-distributed/templates/distributor/service-distributor.yaml
+  - tempo-distributed/templates/enterprise-federation-frontend/service-federation-frontend.yaml
+  - tempo-distributed/templates/enterprise-gateway/gateway-svc.yaml
+  - tempo-distributed/templates/gossip-ring/service-gossip-ring.yaml
+  - tempo-distributed/templates/ingester/service-ingester-discovery.yaml
+  - tempo-distributed/templates/ingester/service-ingester.yaml
+  - tempo-distributed/templates/memcached/service-memcached.yaml
+  - tempo-distributed/templates/querier/service-querier.yaml
+  - tempo-distributed/templates/query-frontend/service-query-frontend-discovery.yaml
+  - tempo-distributed/templates/query-frontend/service-query-frontend.yaml
+  - tempo-distributed/charts/minio/templates/deployment.yaml
+  - tempo-distributed/templates/admin-api/admin-api-dep.yaml
+  - tempo-distributed/templates/compactor/deployment-compactor.yaml
+  - tempo-distributed/templates/distributor/deployment-distributor.yaml
+  - tempo-distributed/templates/enterprise-gateway/gateway-dep.yaml
+  - tempo-distributed/templates/querier/deployment-querier.yaml
+  - tempo-distributed/templates/query-frontend/deployment-query-frontend.yaml
+  - tempo-distributed/templates/ingester/statefulset-ingester.yaml
+  - tempo-distributed/templates/memcached/statefulset-memcached.yaml
+  - tempo-distributed/templates/enterprise-gateway/gateway-ingress.yaml
+secretGenerator:
+- name: gem-license
+  files:
+  - /Users/danstadler/Documents/code/grafana-licenses/GETlicense.txt

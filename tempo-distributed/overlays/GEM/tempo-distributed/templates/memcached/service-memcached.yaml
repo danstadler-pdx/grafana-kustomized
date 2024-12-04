@@ -1,0 +1,26 @@
+---
+# Source: tempo-distributed/templates/memcached/service-memcached.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: gem-tempo-memcached
+  namespace: grafana-enterprise-metrics
+  labels:
+    helm.sh/chart: tempo-distributed-1.23.2
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: gem
+    app.kubernetes.io/component: memcached
+    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  ports:
+  - name: memcached-client
+    port: 11211
+    targetPort: 11211
+  - name: http-metrics
+    port: 9150
+    targetPort: http-metrics
+  selector:
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: gem
+    app.kubernetes.io/component: memcached

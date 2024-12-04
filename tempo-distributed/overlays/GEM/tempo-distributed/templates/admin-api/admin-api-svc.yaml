@@ -1,0 +1,32 @@
+---
+# Source: tempo-distributed/templates/admin-api/admin-api-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: gem-tempo-admin-api
+  labels:
+    helm.sh/chart: tempo-distributed-1.23.2
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: gem
+    app.kubernetes.io/component: admin-api
+    app.kubernetes.io/part-of: memberlist
+    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    {}
+  namespace: "grafana-enterprise-metrics"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3100
+      protocol: TCP
+      name: http-metrics
+      targetPort: http-metrics
+    - port: 9095
+      protocol: TCP
+      name: grpc
+      targetPort: grpc
+  selector:
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: gem
+    app.kubernetes.io/component: admin-api

@@ -1,0 +1,7 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: stadler-get-cert-object
+spec:
+  domains:
+    - stadler-get.se-demo.grafana.net

@@ -1,0 +1,24 @@
+---
+# Source: tempo-distributed/templates/enterprise-federation-frontend/service-federation-frontend.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: gem-tempo-enterprise-federation-frontend
+  namespace: grafana-enterprise-metrics
+  labels:
+    helm.sh/chart: tempo-distributed-1.23.2
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: gem
+    app.kubernetes.io/component: enterprise-federation-frontend
+    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - name: http-metrics
+      port: 3100
+      targetPort: 3100
+  selector:
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: gem
+    app.kubernetes.io/component: enterprise-federation-frontend

@@ -1,0 +1,22 @@
+---
+# Source: tempo-distributed/charts/minio/templates/console-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: gem-minio-console
+  namespace: "grafana-enterprise-metrics"
+  labels:
+    app: minio
+    chart: minio-4.0.12
+    release: gem
+    heritage: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 9001
+      protocol: TCP
+      targetPort: 9001
+  selector:
+    app: minio
+    release: gem

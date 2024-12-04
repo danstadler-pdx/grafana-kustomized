@@ -1,0 +1,38 @@
+---
+# Source: tempo-distributed/templates/distributor/service-distributor-discovery.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: gem-tempo-distributor-discovery
+  namespace: grafana-enterprise-metrics
+  labels:
+    helm.sh/chart: tempo-distributed-1.23.2
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: gem
+    app.kubernetes.io/component: distributor
+    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/managed-by: Helm
+    prometheus.io/service-monitor: "false"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: http-metrics
+      port: 3100
+      targetPort: http-metrics
+    - name: distributor-otlp-http
+      port: 4318
+      protocol: TCP
+      targetPort: otlp-http
+    - name: grpc-distributor-otlp
+      port: 4317
+      protocol: TCP
+      targetPort: grpc-otlp
+    - name: distributor-otlp-legacy
+      port: 55680
+      protocol: TCP
+      targetPort: grpc-otlp
+  selector:
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: gem
+    app.kubernetes.io/component: distributor

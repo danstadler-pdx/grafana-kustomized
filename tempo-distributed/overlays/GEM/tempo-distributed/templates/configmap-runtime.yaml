@@ -1,0 +1,18 @@
+---
+# Source: tempo-distributed/templates/configmap-runtime.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gem-tempo-runtime
+  labels:
+    helm.sh/chart: tempo-distributed-1.23.2
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: gem
+    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/managed-by: Helm
+  namespace: "grafana-enterprise-metrics"
+data:
+  overrides.yaml: |
+    
+    overrides:
+      {}

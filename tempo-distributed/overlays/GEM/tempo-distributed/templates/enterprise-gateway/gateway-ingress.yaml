@@ -1,0 +1,30 @@
+---
+# Source: tempo-distributed/templates/enterprise-gateway/gateway-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gem-tempo-enterprise-gateway
+  labels:
+    helm.sh/chart: tempo-distributed-1.23.2
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: gem
+    app.kubernetes.io/component: enterprise-gateway
+    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    kubernetes.io/ingress.allow-http: "false"
+    kubernetes.io/ingress.global-static-ip-name: stadler-get
+    networking.gke.io/managed-certificates: stadler-get-cert-object
+  namespace: "grafana-enterprise-metrics"
+spec:
+  rules:
+    - host: "stadler-get.se-demo.grafana.net"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gem-tempo-enterprise-gateway
+                port:
+                  number: 3100

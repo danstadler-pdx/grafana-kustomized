@@ -1,0 +1,132 @@
+---
+# Source: tempo-distributed/templates/enterprise-gateway/gateway-dep.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    {}
+  labels:
+    helm.sh/chart: tempo-distributed-1.23.2
+    app.kubernetes.io/name: tempo
+    app.kubernetes.io/instance: gem
+    app.kubernetes.io/component: enterprise-gateway
+    app.kubernetes.io/version: "2.6.0"
+    app.kubernetes.io/managed-by: Helm
+  name: gem-tempo-enterprise-gateway
+  namespace: "grafana-enterprise-metrics"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tempo
+      app.kubernetes.io/instance: gem
+      app.kubernetes.io/component: enterprise-gateway
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: tempo-distributed-1.23.2
+        app.kubernetes.io/name: tempo
+        app.kubernetes.io/instance: gem
+        app.kubernetes.io/version: "2.6.0"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: enterprise-gateway
+      annotations:
+        checksum/config: bb1f01c354f34275b241088bc53a190b0e416de75e5437a16dc67fb022546693
+      namespace: "grafana-enterprise-metrics"
+    spec:
+      serviceAccountName: gem-tempo
+      securityContext:
+        {}
+      initContainers:
+        []
+      
+      containers:
+        - name: gateway
+          image: "docker.io/grafana/enterprise-traces:v2.6.1"
+          imagePullPolicy: IfNotPresent
+          args:
+            - "-target=gateway"
+            - "-config.expand-env=true"
+            - "-config.file=/conf/tempo.yaml"
+          volumeMounts:
+            - name: config
+              mountPath: /conf
+            - name: license
+              mountPath: /license
+            - name: storage
+              mountPath: "/data"
+              subPath: 
+          ports:
+            - name: http-metrics
+              containerPort: 3100
+              protocol: TCP
+          livenessProbe:
+            null
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http-metrics
+            initialDelaySeconds: 45
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+          securityContext:
+            readOnlyRootFilesystem: true
+          env:
+          envFrom:
+      nodeSelector:
+        {}
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: tempo
+              app.kubernetes.io/instance: gem
+              app.kubernetes.io/component: enterprise-gateway
+        
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: tempo
+                    app.kubernetes.io/instance: gem
+                    app.kubernetes.io/component: enterprise-gateway
+                topologyKey: kubernetes.io/hostname
+            - weight: 75
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: tempo
+                    app.kubernetes.io/instance: gem
+                    app.kubernetes.io/component: enterprise-gateway
+                topologyKey: topology.kubernetes.io/zone
+        
+      tolerations:
+        []
+      terminationGracePeriodSeconds: 60
+      volumes:
+        - name: config
+          configMap:
+            name: gem-tempo-config
+            items:
+              - key: "tempo.yaml"
+                path: "tempo.yaml"
+        - name: runtime-config
+          configMap:
+            name: gem-tempo-runtime
+        - name: license
+          secret:
+            secretName: gem-license
+        - name: storage
+          emptyDir: {}
