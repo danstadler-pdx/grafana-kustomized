@@ -1,15 +1,16 @@
 ---
-# Source: tempo-distributed/templates/query-frontend/deployment-query-frontend.yaml
+# Source: tempo-distributed/templates/distributor/deployment-distributor.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gem-tempo-query-frontend
+  name: gem-tempo-distributor
   namespace: grafana-enterprise-traces
   labels:
     helm.sh/chart: tempo-distributed-1.23.2
     app.kubernetes.io/name: tempo
     app.kubernetes.io/instance: gem
-    app.kubernetes.io/component: query-frontend
+    app.kubernetes.io/component: distributor
+    app.kubernetes.io/part-of: memberlist
     app.kubernetes.io/version: "2.6.0"
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -20,11 +21,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: tempo
       app.kubernetes.io/instance: gem
-      app.kubernetes.io/component: query-frontend
-  strategy:
-    rollingUpdate:
-      maxSurge: 0
-      maxUnavailable: 1
+      app.kubernetes.io/component: distributor
   template:
     metadata:
       labels:
@@ -33,7 +30,8 @@ spec:
         app.kubernetes.io/instance: gem
         app.kubernetes.io/version: "2.6.0"
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/component: query-frontend
+        app.kubernetes.io/component: distributor
+        app.kubernetes.io/part-of: memberlist
       annotations:
         checksum/config: 4e100254f6606a9f8f2a87c4d41f6dd8d9f6ae0fdaf4565f025fbdf43708cad5
     spec:
@@ -44,17 +42,30 @@ spec:
       
       containers:
         - args:
-            - -target=query-frontend
+            - -target=distributor
             - -config.file=/conf/tempo.yaml
             - -mem-ballast-size-mbs=1024
           image: docker.io/grafana/enterprise-traces:v2.6.1
           imagePullPolicy: IfNotPresent
-          name: query-frontend
+          name: distributor
           ports:
+            - containerPort: 7946
+              name: http-memberlist
+              protocol: TCP
             - containerPort: 3100
               name: http-metrics
-            - containerPort: 9095
-              name: grpc
+            - containerPort: 4318
+              name: otlp-http
+              protocol: TCP
+            - containerPort: 4317
+              name: grpc-otlp
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http-metrics
+            initialDelaySeconds: 30
+            timeoutSeconds: 1
           resources:
             {}
           securityContext:
@@ -72,7 +83,7 @@ spec:
             - mountPath: /runtime-config
               name: runtime-config
             - mountPath: /var/tempo
-              name: tempo-queryfrontend-store
+              name: tempo-distributor-store
             - name: license
               mountPath: /license
       terminationGracePeriodSeconds: 30
@@ -84,7 +95,7 @@ spec:
             matchLabels:
               app.kubernetes.io/name: tempo
               app.kubernetes.io/instance: gem
-              app.kubernetes.io/component: query-frontend
+              app.kubernetes.io/component: distributor
         
       affinity:
         podAntiAffinity:
@@ -93,7 +104,7 @@ spec:
                 matchLabels:
                   app.kubernetes.io/name: tempo
                   app.kubernetes.io/instance: gem
-                  app.kubernetes.io/component: query-frontend
+                  app.kubernetes.io/component: distributor
               topologyKey: kubernetes.io/hostname
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
@@ -102,7 +113,7 @@ spec:
                   matchLabels:
                     app.kubernetes.io/name: tempo
                     app.kubernetes.io/instance: gem
-                    app.kubernetes.io/component: query-frontend
+                    app.kubernetes.io/component: distributor
                 topologyKey: topology.kubernetes.io/zone
         
       volumes:
@@ -118,8 +129,8 @@ spec:
             items:
               - key: "overrides.yaml"
                 path: "overrides.yaml"
-        - name: tempo-queryfrontend-store
+        - name: tempo-distributor-store
           emptyDir: {}
         - name: license
           secret:
-            secretName: gem-license
+            secretName: get-license

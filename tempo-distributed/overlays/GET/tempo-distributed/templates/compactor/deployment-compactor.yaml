@@ -95,4 +95,4 @@ spec:
           emptyDir: {}
         - name: license
           secret:
-            secretName: gem-license
+            secretName: get-license

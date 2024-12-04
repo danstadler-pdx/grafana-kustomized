@@ -1,27 +1,30 @@
 ---
-# Source: tempo-distributed/templates/distributor/deployment-distributor.yaml
+# Source: tempo-distributed/templates/ingester/statefulset-ingester.yaml
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: gem-tempo-distributor
+  name: gem-tempo-ingester
   namespace: grafana-enterprise-traces
-  labels:
+  labels:    
     helm.sh/chart: tempo-distributed-1.23.2
     app.kubernetes.io/name: tempo
     app.kubernetes.io/instance: gem
-    app.kubernetes.io/component: distributor
+    app.kubernetes.io/component: ingester
     app.kubernetes.io/part-of: memberlist
     app.kubernetes.io/version: "2.6.0"
     app.kubernetes.io/managed-by: Helm
 spec:
-  minReadySeconds: 10
-  replicas: 1
-  revisionHistoryLimit: 10
+  replicas: 3
   selector:
     matchLabels:
       app.kubernetes.io/name: tempo
       app.kubernetes.io/instance: gem
-      app.kubernetes.io/component: distributor
+      app.kubernetes.io/component: ingester
+  serviceName: ingester
+  podManagementPolicy: Parallel
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
   template:
     metadata:
       labels:
@@ -30,7 +33,7 @@ spec:
         app.kubernetes.io/instance: gem
         app.kubernetes.io/version: "2.6.0"
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/component: distributor
+        app.kubernetes.io/component: ingester
         app.kubernetes.io/part-of: memberlist
       annotations:
         checksum/config: 4e100254f6606a9f8f2a87c4d41f6dd8d9f6ae0fdaf4565f025fbdf43708cad5
@@ -40,26 +43,23 @@ spec:
         fsGroup: 1000
       enableServiceLinks: false
       
+      initContainers:
+        []
       containers:
         - args:
-            - -target=distributor
+            - -target=ingester
             - -config.file=/conf/tempo.yaml
             - -mem-ballast-size-mbs=1024
           image: docker.io/grafana/enterprise-traces:v2.6.1
           imagePullPolicy: IfNotPresent
-          name: distributor
+          name: ingester
           ports:
-            - containerPort: 7946
-              name: http-memberlist
-              protocol: TCP
-            - containerPort: 3100
-              name: http-metrics
-            - containerPort: 4318
-              name: otlp-http
-              protocol: TCP
-            - containerPort: 4317
-              name: grpc-otlp
-              protocol: TCP
+            - name: grpc
+              containerPort: 9095
+            - name: http-memberlist
+              containerPort: 7946
+            - name: http-metrics
+              containerPort: 3100
           readinessProbe:
             httpGet:
               path: /ready
@@ -83,10 +83,10 @@ spec:
             - mountPath: /runtime-config
               name: runtime-config
             - mountPath: /var/tempo
-              name: tempo-distributor-store
+              name: data
             - name: license
               mountPath: /license
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: 300
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: topology.kubernetes.io/zone
@@ -95,17 +95,10 @@ spec:
             matchLabels:
               app.kubernetes.io/name: tempo
               app.kubernetes.io/instance: gem
-              app.kubernetes.io/component: distributor
+              app.kubernetes.io/component: ingester
         
       affinity:
         podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchLabels:
-                  app.kubernetes.io/name: tempo
-                  app.kubernetes.io/instance: gem
-                  app.kubernetes.io/component: distributor
-              topologyKey: kubernetes.io/hostname
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
               podAffinityTerm:
@@ -113,7 +106,15 @@ spec:
                   matchLabels:
                     app.kubernetes.io/name: tempo
                     app.kubernetes.io/instance: gem
-                    app.kubernetes.io/component: distributor
+                    app.kubernetes.io/component: ingester
+                topologyKey: kubernetes.io/hostname
+            - weight: 75
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: tempo
+                    app.kubernetes.io/instance: gem
+                    app.kubernetes.io/component: ingester
                 topologyKey: topology.kubernetes.io/zone
         
       volumes:
@@ -129,8 +130,8 @@ spec:
             items:
               - key: "overrides.yaml"
                 path: "overrides.yaml"
-        - name: tempo-distributor-store
-          emptyDir: {}
         - name: license
           secret:
-            secretName: gem-license
+            secretName: get-license
+        - name: data
+          emptyDir: {}
