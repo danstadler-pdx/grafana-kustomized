@@ -3,12 +3,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: gem-tempo-gossip-ring
+  name: tempo-gossip-ring
   namespace: grafana-enterprise-traces
   labels:
     helm.sh/chart: tempo-distributed-1.23.2
     app.kubernetes.io/name: tempo
-    app.kubernetes.io/instance: gem
+    app.kubernetes.io/instance: tempo
     app.kubernetes.io/component: gossip-ring
     app.kubernetes.io/version: "2.6.0"
     app.kubernetes.io/managed-by: Helm
@@ -24,5 +24,5 @@ spec:
   publishNotReadyAddresses: true
   selector:
     app.kubernetes.io/name: tempo
-    app.kubernetes.io/instance: gem
+    app.kubernetes.io/instance: tempo
     app.kubernetes.io/part-of: memberlist

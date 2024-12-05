@@ -3,12 +3,12 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: gem-tempo-ingester
+  name: tempo-ingester
   namespace: grafana-enterprise-traces
   labels:    
     helm.sh/chart: tempo-distributed-1.23.2
     app.kubernetes.io/name: tempo
-    app.kubernetes.io/instance: gem
+    app.kubernetes.io/instance: tempo
     app.kubernetes.io/component: ingester
     app.kubernetes.io/part-of: memberlist
     app.kubernetes.io/version: "2.6.0"
@@ -18,7 +18,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: tempo
-      app.kubernetes.io/instance: gem
+      app.kubernetes.io/instance: tempo
       app.kubernetes.io/component: ingester
   serviceName: ingester
   podManagementPolicy: Parallel
@@ -30,15 +30,15 @@ spec:
       labels:
         helm.sh/chart: tempo-distributed-1.23.2
         app.kubernetes.io/name: tempo
-        app.kubernetes.io/instance: gem
+        app.kubernetes.io/instance: tempo
         app.kubernetes.io/version: "2.6.0"
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: ingester
         app.kubernetes.io/part-of: memberlist
       annotations:
-        checksum/config: 4e100254f6606a9f8f2a87c4d41f6dd8d9f6ae0fdaf4565f025fbdf43708cad5
+        checksum/config: 9065dfcb52c837526ce7c85002346e4ff68c82cd91028904584e213b2cc29839
     spec:
-      serviceAccountName: gem-tempo
+      serviceAccountName: tempo
       securityContext:
         fsGroup: 1000
       enableServiceLinks: false
@@ -94,7 +94,7 @@ spec:
           labelSelector:
             matchLabels:
               app.kubernetes.io/name: tempo
-              app.kubernetes.io/instance: gem
+              app.kubernetes.io/instance: tempo
               app.kubernetes.io/component: ingester
         
       affinity:
@@ -105,7 +105,7 @@ spec:
                 labelSelector:
                   matchLabels:
                     app.kubernetes.io/name: tempo
-                    app.kubernetes.io/instance: gem
+                    app.kubernetes.io/instance: tempo
                     app.kubernetes.io/component: ingester
                 topologyKey: kubernetes.io/hostname
             - weight: 75
@@ -113,20 +113,20 @@ spec:
                 labelSelector:
                   matchLabels:
                     app.kubernetes.io/name: tempo
-                    app.kubernetes.io/instance: gem
+                    app.kubernetes.io/instance: tempo
                     app.kubernetes.io/component: ingester
                 topologyKey: topology.kubernetes.io/zone
         
       volumes:
         - name: config
           configMap:
-            name: gem-tempo-config
+            name: tempo-config
             items:
               - key: "tempo.yaml"
                 path: "tempo.yaml"
         - name: runtime-config
           configMap:
-            name: gem-tempo-runtime
+            name: tempo-runtime
             items:
               - key: "overrides.yaml"
                 path: "overrides.yaml"

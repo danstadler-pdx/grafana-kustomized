@@ -3,12 +3,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gem-minio
+  name: tempo-minio
   namespace: "grafana-enterprise-traces"
   labels:
     app: minio
     chart: minio-4.0.12
-    release: gem
+    release: tempo
     heritage: Helm
 spec:
   strategy:
@@ -20,16 +20,16 @@ spec:
   selector:
     matchLabels:
       app: minio
-      release: gem
+      release: tempo
   template:
     metadata:
-      name: gem-minio
+      name: tempo-minio
       labels:
         app: minio
-        release: gem
+        release: tempo
       annotations:
-        checksum/secrets: de88cd536d0d0b5f156d8e88abeb71c7f33db7ce231ace81dfc0a9d8605dd811
-        checksum/config: 54a9db7c21d2c4ddf45638c7195684ada6bffec08947fdf68793e6258f178cde
+        checksum/secrets: 91dd4a2017236beb07c76dcbe0d20a0d3b73e67e79765449e78e444944e2c0d1
+        checksum/config: 75d3724f9415dad6a23e6694a22397e251b351976992bc3715fcd890662cc05b
     spec:
       securityContext:
         runAsUser: 1000
@@ -61,12 +61,12 @@ spec:
             - name: MINIO_ROOT_USER
               valueFrom:
                 secretKeyRef:
-                  name: gem-minio
+                  name: tempo-minio
                   key: rootUser
             - name: MINIO_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: gem-minio
+                  name: tempo-minio
                   key: rootPassword
             - name: MINIO_PROMETHEUS_AUTH_TYPE
               value: "public"
@@ -77,7 +77,7 @@ spec:
       volumes:
         - name: export
           persistentVolumeClaim:
-            claimName: gem-minio
+            claimName: tempo-minio
         - name: minio-user
           secret:
-            secretName: gem-minio
+            secretName: tempo-minio

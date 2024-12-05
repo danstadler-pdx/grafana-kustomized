@@ -3,12 +3,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: gem-minio
+  name: tempo-minio
   namespace: "grafana-enterprise-traces"
   labels:
     app: minio
     chart: minio-4.0.12
-    release: gem
+    release: tempo
     heritage: Helm
 data:
   initialize: |-

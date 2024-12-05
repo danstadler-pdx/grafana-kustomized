@@ -3,12 +3,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: gem-tempo-query-frontend-discovery
+  name: tempo-query-frontend-discovery
   namespace: grafana-enterprise-traces
   labels:
     helm.sh/chart: tempo-distributed-1.23.2
     app.kubernetes.io/name: tempo
-    app.kubernetes.io/instance: gem
+    app.kubernetes.io/instance: tempo
     app.kubernetes.io/component: query-frontend
     app.kubernetes.io/version: "2.6.0"
     app.kubernetes.io/managed-by: Helm
@@ -30,5 +30,5 @@ spec:
   publishNotReadyAddresses: true
   selector:
     app.kubernetes.io/name: tempo
-    app.kubernetes.io/instance: gem
+    app.kubernetes.io/instance: tempo
     app.kubernetes.io/component: query-frontend

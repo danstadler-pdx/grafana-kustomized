@@ -3,12 +3,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: gem-minio
+  name: tempo-minio
   namespace: "grafana-enterprise-traces"
   labels:
     app: minio
     chart: minio-4.0.12
-    release: gem
+    release: tempo
     heritage: Helm
     monitoring: "true"
 spec:
@@ -20,4 +20,4 @@ spec:
       targetPort: 9000
   selector:
     app: minio
-    release: gem
+    release: tempo

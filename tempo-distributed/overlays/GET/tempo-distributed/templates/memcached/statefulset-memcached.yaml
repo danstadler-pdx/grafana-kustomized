@@ -3,12 +3,12 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: gem-tempo-memcached
+  name: tempo-memcached
   namespace: grafana-enterprise-traces
   labels:
     helm.sh/chart: tempo-distributed-1.23.2
     app.kubernetes.io/name: tempo
-    app.kubernetes.io/instance: gem
+    app.kubernetes.io/instance: tempo
     app.kubernetes.io/component: memcached
     app.kubernetes.io/version: "2.6.0"
     app.kubernetes.io/managed-by: Helm
@@ -17,7 +17,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: tempo
-      app.kubernetes.io/instance: gem
+      app.kubernetes.io/instance: tempo
       app.kubernetes.io/component: memcached
   serviceName: memcached
   template:
@@ -25,12 +25,12 @@ spec:
       labels:
         helm.sh/chart: tempo-distributed-1.23.2
         app.kubernetes.io/name: tempo
-        app.kubernetes.io/instance: gem
+        app.kubernetes.io/instance: tempo
         app.kubernetes.io/component: memcached
         app.kubernetes.io/version: "2.6.0"
         app.kubernetes.io/managed-by: Helm
     spec:
-      serviceAccountName: gem-tempo
+      serviceAccountName: tempo
       securityContext:
         fsGroup: 1000
       enableServiceLinks: false
@@ -60,7 +60,7 @@ spec:
           labelSelector:
             matchLabels:
               app.kubernetes.io/name: tempo
-              app.kubernetes.io/instance: gem
+              app.kubernetes.io/instance: tempo
               app.kubernetes.io/component: memcached
         
       affinity:
@@ -69,7 +69,7 @@ spec:
             - labelSelector:
                 matchLabels:
                   app.kubernetes.io/name: tempo
-                  app.kubernetes.io/instance: gem
+                  app.kubernetes.io/instance: tempo
                   app.kubernetes.io/component: memcached
               topologyKey: kubernetes.io/hostname
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -78,7 +78,7 @@ spec:
                 labelSelector:
                   matchLabels:
                     app.kubernetes.io/name: tempo
-                    app.kubernetes.io/instance: gem
+                    app.kubernetes.io/instance: tempo
                     app.kubernetes.io/component: memcached
                 topologyKey: topology.kubernetes.io/zone
         

@@ -8,18 +8,18 @@ metadata:
   labels:
     helm.sh/chart: tempo-distributed-1.23.2
     app.kubernetes.io/name: tempo
-    app.kubernetes.io/instance: gem
+    app.kubernetes.io/instance: tempo
     app.kubernetes.io/component: enterprise-gateway
     app.kubernetes.io/version: "2.6.0"
     app.kubernetes.io/managed-by: Helm
-  name: gem-tempo-enterprise-gateway
+  name: tempo-enterprise-gateway
   namespace: "grafana-enterprise-traces"
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: tempo
-      app.kubernetes.io/instance: gem
+      app.kubernetes.io/instance: tempo
       app.kubernetes.io/component: enterprise-gateway
   strategy:
     rollingUpdate:
@@ -31,15 +31,15 @@ spec:
       labels:
         helm.sh/chart: tempo-distributed-1.23.2
         app.kubernetes.io/name: tempo
-        app.kubernetes.io/instance: gem
+        app.kubernetes.io/instance: tempo
         app.kubernetes.io/version: "2.6.0"
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: enterprise-gateway
       annotations:
-        checksum/config: 4e100254f6606a9f8f2a87c4d41f6dd8d9f6ae0fdaf4565f025fbdf43708cad5
+        checksum/config: 9065dfcb52c837526ce7c85002346e4ff68c82cd91028904584e213b2cc29839
       namespace: "grafana-enterprise-traces"
     spec:
-      serviceAccountName: gem-tempo
+      serviceAccountName: tempo
       securityContext:
         {}
       initContainers:
@@ -89,7 +89,7 @@ spec:
           labelSelector:
             matchLabels:
               app.kubernetes.io/name: tempo
-              app.kubernetes.io/instance: gem
+              app.kubernetes.io/instance: tempo
               app.kubernetes.io/component: enterprise-gateway
         
       affinity:
@@ -100,7 +100,7 @@ spec:
                 labelSelector:
                   matchLabels:
                     app.kubernetes.io/name: tempo
-                    app.kubernetes.io/instance: gem
+                    app.kubernetes.io/instance: tempo
                     app.kubernetes.io/component: enterprise-gateway
                 topologyKey: kubernetes.io/hostname
             - weight: 75
@@ -108,7 +108,7 @@ spec:
                 labelSelector:
                   matchLabels:
                     app.kubernetes.io/name: tempo
-                    app.kubernetes.io/instance: gem
+                    app.kubernetes.io/instance: tempo
                     app.kubernetes.io/component: enterprise-gateway
                 topologyKey: topology.kubernetes.io/zone
         
@@ -118,13 +118,13 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: gem-tempo-config
+            name: tempo-config
             items:
               - key: "tempo.yaml"
                 path: "tempo.yaml"
         - name: runtime-config
           configMap:
-            name: gem-tempo-runtime
+            name: tempo-runtime
         - name: license
           secret:
             secretName: get-license
