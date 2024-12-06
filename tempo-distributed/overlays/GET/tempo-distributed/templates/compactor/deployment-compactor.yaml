@@ -95,4 +95,4 @@ spec:
           emptyDir: {}
         - name: license
           secret:
-            secretName: get-license
+            secretName: tempo-license

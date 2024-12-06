@@ -133,6 +133,6 @@ spec:
             name: tempo-runtime
         - name: license
           secret:
-            secretName: get-license
+            secretName: tempo-license
         - name: storage
           emptyDir: {}

@@ -132,6 +132,6 @@ spec:
                 path: "overrides.yaml"
         - name: license
           secret:
-            secretName: get-license
+            secretName: tempo-license
         - name: data
           emptyDir: {}
